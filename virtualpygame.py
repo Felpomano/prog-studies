@@ -42,6 +42,7 @@ class VirtualPet:
             self.status = "Bored/Hungry"
         else:
             self.status = "Happy"
+        #I WANT TO MAKE A MECHANIC THAT THE PET FUCKING DIES please don't forget me :( )
     
     def feed(self):
         self.hunger = min(100.0, self.hunger + 20)
@@ -59,7 +60,7 @@ play_btn = pygame.Rect(230, 420, 120, 40)
 #MAIN GAME LOOP
 running = True
 while running:
-    #EVENT HANDLING
+    #EVENT HANDLING / function that teached me about how to detect a mouse in prog (and how for works)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -72,16 +73,45 @@ while running:
                 elif play_btn.collidepoint(mouse_pos):
                     pet.play()
 
-#UPDATE PET STATES
-pet.update()
+    #UPDATE PET STATES
+    pet.update()
 
-#DRAW EVERYTHING
-screen.fill(WHITE)
+    #DRAW EVERYTHING
+    screen.fill(WHITE)
 
-#DRAW UI BACKGROUND PANEL
-pygame.draw.rect(screen, GRAY, (0, 350, WIDTH, 150))
+    #DRAW UI BACKGROUND PANEL
+    pygame.draw.rect(screen, GRAY, (0, 350, WIDTH, 150))
 
-#RENDER TEXT UI
-status_text = font.render(f"Mood: {pet.status}", True, DARK_GRAY)
-hunger_text = font.render(f"Hunger: {int(pet.hunger)}/100", True, DARK_GRAY)
-happy_text = font. render(f"Happiness: {int(pet.happiness)}/100", True, DARK_GRAY)
+    #RENDER TEXT UI
+    status_text = font.render(f"Mood: {pet.status}", True, DARK_GRAY)
+    hunger_text = font.render(f"Hunger: {int(pet.hunger)}/100", True, DARK_GRAY)
+    happy_text = font. render(f"Happiness: {int(pet.happiness)}/100", True, DARK_GRAY)
+
+    screen.blit(status_text, (20, 20))
+    screen.blit(hunger_text, (20, 60))
+    screen.blit(happy_text, (20, 80))
+
+    
+    #DRAW PET (CHANGES COLOR BASED ON MOOD)
+    pet_color = GREEN if pet.status == "Happy" else (BLUE if pet.status == "Bored/Hungry" else RED)
+    pygame.draw.circle(screen, pet_color, (WIDTH // 2, HEIGHT // 2 - 40), 60) #BODY
+    pygame.draw.circle(screen, DARK_GRAY, (WIDTH // 2 - 20, HEIGHT // 2 - 50), 6) #LEFT EYE
+    pygame.draw.circle(screen, DARK_GRAY, (WIDTH // 2 + 20, HEIGHT // 2 - 50), 6) #RIGHT EYE
+    pygame.draw.circle(screen, DARK_GRAY, (WIDTH // 2, HEIGHT // 2 - 25), 6) #mouth.
+    #+ 40 / -25
+
+    #DRAW INTERACTIVE BUTTONS
+    pygame.draw.rect(screen, GREEN, feed_btn, border_radius=5)
+    pygame.draw.rect(screen, BLUE, play_btn, border_radius=5)
+
+    feed_label = font.render("Feed", True, WHITE)
+    play_label = font.render("Play", True, WHITE)
+    screen.blit(feed_label, (feed_btn.x + 40, feed_btn.y + 8))
+    screen.blit(play_label, (play_btn.x + 40, play_btn.y + 8))
+
+    # Refresh the display
+    pygame.display.flip()
+    clock.tick(60) #Lock framerate to 60 FPS
+
+pygame.quit()
+sys.exit()
